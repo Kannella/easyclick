@@ -11,15 +11,20 @@ public class Seat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private int tableNumber;
+
+    @OneToOne(mappedBy = "seat") // A mesa tem um pedido ativo (opcionalmente)
+    private Order currentOrder;
 
     public Seat() {
 
     }
 
-    public Seat(Long id, int tableNumber) {
+    public Seat(Long id, int tableNumber, Order currentOrder) {
         this.id = id;
         this.tableNumber = tableNumber;
+        this.currentOrder = currentOrder;
     }
 
     public Long getId() {
@@ -36,6 +41,14 @@ public class Seat {
 
     public void setTableNumber(int tableNumber) {
         this.tableNumber = tableNumber;
+    }
+
+    public Order getCurrentOrder() {
+        return currentOrder;
+    }
+
+    public void setCurrentOrder(Order currentOrder) {
+        this.currentOrder = currentOrder;
     }
 
     @Override

@@ -3,6 +3,9 @@ package com.tablix.easyclick.entities;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "tb_menuitem")
 public class MenuItem {
@@ -19,17 +22,23 @@ public class MenuItem {
     private String category;
     private String imgUrl;
 
+    //Muitos itens do cardapio se faz presente em muitos pedidos (ou seja, uma lista de pedidos). Dessa forma
+    //voce consegue acessar todos os pedidos que tal item esta presente
+    @ManyToMany(mappedBy = "menuItems")
+    private List<OrderItem> orderItems = new ArrayList<>();
+
     public MenuItem() {
 
     }
 
-    public MenuItem(Long id, String name, String description, double price, String category, String imgUrl) {
+    public MenuItem(Long id, String name, String description, double price, String category, String imgUrl, List<OrderItem> orderItems) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.category = category;
         this.imgUrl = imgUrl;
+        this.orderItems = orderItems;
     }
 
     public Long getId() {
@@ -80,6 +89,14 @@ public class MenuItem {
         this.imgUrl = imgUrl;
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
     @Override
     public String toString() {
         return "MenuItem{" +
@@ -89,6 +106,7 @@ public class MenuItem {
                 ", price=" + price +
                 ", category='" + category + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
+                ", orderItems=" + orderItems +
                 '}';
     }
 }

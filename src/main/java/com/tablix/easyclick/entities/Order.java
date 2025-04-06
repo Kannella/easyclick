@@ -20,11 +20,12 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private Status status;
 
+    //Um pedido tem muitos "mini pedidos" dentro dele (OrderItem).
     @OneToMany(mappedBy = "order")
     private List<OrderItem> items = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name="seat_id")
+    @OneToOne
+    @JoinColumn(name = "seat_id") // Cria FK seat_id em Order
     private Seat seat;
 
     @ManyToMany
@@ -103,4 +104,19 @@ vínculo está definida na entidade OrderItem, especificamente no
 campo chamado order. Dessa forma, é a própria entidade OrderItem que
 “possui” a relação (ou seja, a coluna de FK fica na tabela correspondente a OrderItem),
 enquanto Order apenas declara que está relacionada a muitos OrderItem.
+
+Quando falamos em relacionamentos bidirecionais no JPA/Hibernate,
+sempre existe um lado “dono” (owning side) e um lado “mapeado” (inverse side).
+Aqui vai um passo a passo para entender:
+
+O lado que “possui” a FK (foreign key) no banco de dados é o lado dono.
+    No seu caso, quem “possui” a coluna order_id é a tabela/entidade OrderItem.
+    Por isso, em OrderItem fica @ManyToOne @JoinColumn(name = "order_id") private Order order;.
+    Esse é o lado que realmente guarda a informação da associação na base de dados.
+
+O outro lado (no seu exemplo, Order) é o lado inverso.
+    Em Order, temos @OneToMany(mappedBy = "order") private List<OrderItem> items;.
+    O mappedBy = "order" diz ao JPA que ele não deve criar uma coluna de FK em Order; quem mantém a FK é o lado “dono” (OrderItem).
+    A string "order" em mappedBy = "order" deve ser exatamente o nome do atributo em OrderItem que faz a relação com Order.
+
  */
